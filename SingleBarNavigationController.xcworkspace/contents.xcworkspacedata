@@ -2,9 +2,9 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:SingleBarNavigationControllerDemo/SingleBarNavigationControllerDemo.xcodeproj">
+      location = "group:SingleBarNavigationController/SingleBarNavigationController.xcodeproj">
    </FileRef>
    <FileRef
-      location = "group:SingleBarNavigationController/SingleBarNavigationController.xcodeproj">
+      location = "group:SingleBarNavigationControllerDemo/SingleBarNavigationControllerDemo.xcodeproj">
    </FileRef>
 </Workspace>
