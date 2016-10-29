@@ -7,12 +7,13 @@
 //
 
 import Foundation
+import UIKit
 
 fileprivate var kInteractivePopGestureKey = "kInteractivePopGestureKey"
 
-public extension UIViewController {
+extension UIViewController {
     
-    public var rt_navigationController: RootNavigationController? {
+     var rt_navigationController: RootNavigationController? {
 //        var rootNavigationController: RootNavigationController?
         if !(self is RootNavigationController) {
             return self.navigationController as? RootNavigationController
@@ -42,14 +43,14 @@ public extension UIViewController {
     }
 }
 
-public extension UIViewController {
+ extension UIViewController {
     var rt_hasSetInteractivePop: Bool {
         return (getAssociatedObject(&kInteractivePopGestureKey) as? Bool ?? false)
     }
 }
 
 
-public extension NSObject {
+ extension NSObject {
     func setAssociatedObject(_ value: AnyObject?, associativeKey: UnsafeRawPointer, policy: objc_AssociationPolicy) {
         if let valueAsAnyObject = value {
             objc_setAssociatedObject(self, associativeKey, valueAsAnyObject, policy)
