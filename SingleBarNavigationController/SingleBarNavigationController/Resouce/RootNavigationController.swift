@@ -7,34 +7,40 @@
 //
 
 import Foundation
+import UIKit
 
 func SafeWrapViewController(controller: UIViewController,
                             navigationBarClass: AnyClass? = nil,
                             withPlaceholder: Bool = false,
                             backItem: UIBarButtonItem? = nil,
                             backTitle: String? = nil) -> UIViewController {
-    if !(controller is WrapperController) {
-        return WrapperController(controller: controller, navigationBarClass: navigationBarClass, withPlaceholderController: withPlaceholder, back: backItem, backTitle: backTitle)
+    if !(controller is WrapperViewController) {
+        return WrapperViewController(controller: controller, navigationBarClass: navigationBarClass, withPlaceholderController: withPlaceholder, back: backItem, backTitle: backTitle)
     }
     return controller
 }
 
 func SafeUnwrapViewController(controller: UIViewController) -> UIViewController {
     
-    if (controller is WrapperController) {
-        return (controller as! WrapperController).contentViewController
+    if (controller is WrapperViewController) {
+        return (controller as! WrapperViewController).contentViewController
     }
     return controller
 }
 
-public class RootNavigationController: UINavigationController {
-    // MARK: - Methods
-    weak var rt_delegate: UINavigationControllerDelegate?
-    var animationBlock: ((Bool) -> Void)?
+
+ class RootNavigationController: UINavigationController, UINavigationControllerDelegate {
+    fileprivate weak var rt_delegate: UINavigationControllerDelegate?
+    fileprivate var animationBlock: ((Bool) -> Void)?
 
     // TOOD: 加 is
    @IBInspectable var useSystemBackBarButtonItem = false
    @IBInspectable var transferNavigationBarAttributes = false
+    
+    var rt_topViewController: UIViewController {
+        return SafeUnwrapViewController(controller: super.topViewController!)
+    }
+    
     var rt_visibleViewController: UIViewController {
         return SafeUnwrapViewController(controller: super.visibleViewController!)
     }
@@ -45,68 +51,74 @@ public class RootNavigationController: UINavigationController {
         })
     }
 
-    var rt_topViewController: UIViewController {
-        return SafeUnwrapViewController(controller: super.topViewController!)
-    }
-
     func onBack(_ sender: Any) {
         _ = self.popViewController(animated: true)
     }
     
     func _commonInit() {
+    
     }
     
-    // The output below is limited by 4 KB.
-    // Upgrade your plan to remove this limitation.
     
     // MARK: - Overrides
-    
-    override open func awakeFromNib() {
+    override  func awakeFromNib() {
         self.viewControllers = super.viewControllers
     }
     
-    required public init() {
-       super.init(nibName: nil, bundle: nil)
+    required  init() {
+        super.init(nibName: nil, bundle: nil)
+        
     }
     
-    required public init?(coder aDecoder: NSCoder) {
+    required  init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         
-        self._commonInit()
     }
     
-    override init(navigationBarClass: AnyClass?, toolbarClass: AnyClass?) {
-        super.init(navigationBarClass: navigationBarClass, toolbarClass: toolbarClass)
-        
-        self._commonInit()
-        
-    }
-
     override init(rootViewController: UIViewController) {
         super.init(rootViewController: SafeWrapViewController(controller: rootViewController, navigationBarClass: rootViewController.navigationBarClass))
-        self._commonInit()
     }
     
     convenience init(rootViewControllerNoWrapping rootViewController: UIViewController) {
         self.init()
         
         super.pushViewController(rootViewController, animated: false)
-        self._commonInit()
-        
     }
     
-    override open func viewDidLoad() {
+    override  func viewDidLoad() {
         super.viewDidLoad()
         self.view.backgroundColor = UIColor.white
         super.delegate = self
+        
         super.setNavigationBarHidden(true, animated: false)
+//        super.navigationBar.isHidden = true
+//        super.isNavigationBarHidden = true
+//        self.isNavigationBarHidden = true
+        
     }
 
-    override open func setNavigationBarHidden(_ hidden:  Bool, animated:  Bool) {
+    @available(iOS, introduced: 6.0, deprecated: 9.0)
+    func forUnwindSegueAction(_ action: Selector, from fromViewController: UIViewController, withSender sender: Any) -> UIViewController? {
+        var viewController = super.forUnwindSegueAction(action, from: fromViewController, withSender: sender)
+        
+        if viewController == nil {
+            if let index = self.viewControllers.index(of: fromViewController) {
+                for i in 0..<index {
+                    if let _ = self.viewControllers[i].forUnwindSegueAction(action, from: fromViewController, withSender: sender) {
+                        viewController = self.viewControllers[i].forUnwindSegueAction(action, from: fromViewController, withSender: sender)
+                        break
+                    }
+                }
+            }
+        }
+        return viewController
+    }
+    
+    override  func setNavigationBarHidden(_ hidden:  Bool, animated:  Bool) {
         // Override to protect
     }
 
-    override open func pushViewController(_ viewController: UIViewController, animated: Bool) {
+    override  func pushViewController(_ viewController: UIViewController, animated: Bool) {
         if self.viewControllers.count > 0 {
             let currentLast = SafeUnwrapViewController(controller: self.viewControllers.last!)
             super.pushViewController(SafeWrapViewController(controller: viewController,
@@ -120,17 +132,17 @@ public class RootNavigationController: UINavigationController {
         }
     }
 
-    override open func popViewController(animated: Bool) -> UIViewController {
+    override  func popViewController(animated: Bool) -> UIViewController {
         return SafeUnwrapViewController(controller: super.popViewController(animated: animated)!)
     }
     
-    override open func popToRootViewController(animated: Bool) -> [UIViewController]? {
+    override  func popToRootViewController(animated: Bool) -> [UIViewController]? {
         return super.popToRootViewController(animated: animated)!.map{ (viewController) -> UIViewController in
           SafeUnwrapViewController(controller: viewController)
         }
     }
 
-    override open func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController] {
+    override  func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
         var controllerToPop: UIViewController? = nil
         for item in super.viewControllers {
             if SafeUnwrapViewController(controller: item) == viewController {
@@ -144,10 +156,10 @@ public class RootNavigationController: UINavigationController {
                 return SafeUnwrapViewController(controller: viewController)
             })
         }
-        return []
+        return nil
     }
     
-    override open func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
+    override  func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
         var vcs = [UIViewController]()
         for (index, viewController) in viewControllers.enumerated() {
             if self.useSystemBackBarButtonItem && index > 0 {
@@ -159,39 +171,39 @@ public class RootNavigationController: UINavigationController {
         super.setViewControllers(vcs, animated: animated)
     }
     
-    override open var delegate: UINavigationControllerDelegate? {
-        didSet {
-            self.rt_delegate = delegate
-        }
-    }
-//
-//    func shouldAutorotate(to toInterfaceOrientation: UIInterfaceOrientation) -> Bool {
-//        return self.topViewController!.shouldAutorotate(to: toInterfaceOrientation)
+//    override  var delegate: UINavigationControllerDelegate? {
+//        set {
+//            self.rt_delegate = delegate
+//        }
+//        
+//        get {
+//            return self.rt_delegate
+//        }
 //    }
     
-    override open var shouldAutorotate: Bool {
+    override  var shouldAutorotate: Bool {
         return self.topViewController?.shouldAutorotate ?? false
     }
 
-    override open var supportedInterfaceOrientations: UIInterfaceOrientationMask {
+    override  var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return self.topViewController?.supportedInterfaceOrientations ?? .portrait
     }
 
-    override open var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
+    override  var preferredInterfaceOrientationForPresentation: UIInterfaceOrientation {
          return self.topViewController?.preferredInterfaceOrientationForPresentation ?? .unknown
     }
 
     @available(iOS, introduced: 2.0, deprecated: 8.0, message: "Header views are animated along with the rest of the view hierarchy")
-    override open func rotatingHeaderView() -> UIView? {
-        return self.topViewController!.rotatingHeaderView()!
+    override  func rotatingHeaderView() -> UIView? {
+        return self.topViewController?.rotatingHeaderView()
     }
     
     @available(iOS, introduced: 2.0, deprecated: 8.0, message: "Footer views are animated along with the rest of the view hierarchy")
-    override open func rotatingFooterView() -> UIView? {
-        return self.topViewController!.rotatingFooterView()!
+    override  func rotatingFooterView() -> UIView? {
+        return self.topViewController?.rotatingFooterView()
     }
     
-    override open func responds(to aSelector: Selector) -> Bool {
+    override  func responds(to aSelector: Selector) -> Bool {
         if super.responds(to: aSelector) {
             return true
         }
@@ -200,13 +212,74 @@ public class RootNavigationController: UINavigationController {
         return self.rt_delegate?.responds(to: aSelector) ?? false
     }
 
-    override open func forwardingTarget(for aSelector: Selector) -> Any {
+    override  func forwardingTarget(for aSelector: Selector) -> Any? {
         return self.rt_delegate
+    }
+    
+     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        var viewController = viewController
+        let isRootVC = viewController == navigationController.viewControllers.first!
+        if !isRootVC {
+            viewController = SafeUnwrapViewController(controller: viewController)
+            if !self.useSystemBackBarButtonItem && viewController.navigationItem.leftBarButtonItem == nil {
+                viewController.navigationItem.leftBarButtonItem = viewController.customBackItem(withTarget: self, action: #selector(self.onBack))
+            }
+        }
+        
+        self.rt_delegate?.navigationController!(navigationController, willShow: viewController, animated: animated)
+    }
+    
+     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        var viewController = viewController
+        let isRootVC = viewController == navigationController.viewControllers.first!
+        viewController = SafeUnwrapViewController(controller: viewController)
+        if viewController.disableInteractivePopGesture {
+            self.interactivePopGestureRecognizer?.delegate = nil
+            self.interactivePopGestureRecognizer?.isEnabled = false
+        } else {
+            self.interactivePopGestureRecognizer?.delaysTouchesBegan = true
+            self.interactivePopGestureRecognizer?.delegate = self
+            self.interactivePopGestureRecognizer?.isEnabled = !isRootVC
+        }
+        RootNavigationController.attemptRotationToDeviceOrientation()
+        if (self.animationBlock != nil) {
+            self.animationBlock!(true)
+            self.animationBlock = nil
+        }
+        self.rt_delegate?.navigationController!(navigationController, didShow: viewController, animated: animated)
+    }
+    
+     func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
+        if self.rt_delegate != nil {
+            return self.rt_delegate!.navigationControllerSupportedInterfaceOrientations!(navigationController)
+        }
+        return .all
+    }
+    
+     func navigationControllerPreferredInterfaceOrientationForPresentation(_ navigationController: UINavigationController) -> UIInterfaceOrientation {
+        if self.rt_delegate != nil {
+            return self.rt_delegate!.navigationControllerPreferredInterfaceOrientationForPresentation!(navigationController)
+        }
+        return .portrait
+    }
+    
+     func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
+        if self.rt_delegate != nil {
+            return self.rt_delegate!.navigationController!(navigationController, interactionControllerFor: animationController)!
+        }
+        return nil
+    }
+    
+     func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if self.rt_delegate != nil {
+            return self.rt_delegate!.navigationController!(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
+        }
+        return nil
     }
 }
 
 extension RootNavigationController {
-    // MARK: - Public Methods
+    // MARK: -  Methods
     func remove(_ controller: UIViewController) {
         self.remove(controller, animated: false)
     }
@@ -234,13 +307,14 @@ extension RootNavigationController {
         self.pushViewController(viewController, animated: animated)
     }
 
-    func pop(to viewController: UIViewController, animated: Bool, complete block: @escaping (Bool) -> Void) -> [Any] {
+    func popToViewController(viewController: UIViewController, animated: Bool, complete block: @escaping (Bool) -> Void) -> [UIViewController]? {
         if (self.animationBlock != nil) {
             self.animationBlock!(false)
         }
         self.animationBlock = block
         let array = self.popToViewController(viewController, animated: animated)
-        if array.count > 0 {
+        if let _ = array,
+            array!.count > 0 {
             if (self.animationBlock != nil) {
                 self.animationBlock = nil
             }
@@ -248,96 +322,29 @@ extension RootNavigationController {
         return array
     }
 
-    func popToRootViewController(animated: Bool, complete block: @escaping (Bool) -> Void) -> [Any] {
+    func popToRootViewController(animated: Bool, complete block: @escaping (Bool) -> Void) -> [UIViewController]? {
         if (self.animationBlock != nil) {
             self.animationBlock!(false)
         }
         self.animationBlock = block
-        let array = self.popToRootViewController(animated: animated)!
-        if array.count > 0 {
+        let array = self.popToRootViewController(animated: animated)
+        if let _ = array,
+            array!.count > 0 {
             if (self.animationBlock != nil) {
                 self.animationBlock = nil
             }
         }
         return array
-    }
-}
-
-extension RootNavigationController: UINavigationControllerDelegate {
-
-    public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        var viewController = viewController
-        let isRootVC = viewController == navigationController.viewControllers.first!
-        if !isRootVC {
-            viewController = SafeUnwrapViewController(controller: viewController)
-            if !self.useSystemBackBarButtonItem && viewController.navigationItem.leftBarButtonItem != nil {
-                viewController.navigationItem.leftBarButtonItem! = viewController.customBackItem(withTarget: self, action: #selector(self.onBack))
-            }
-        }
-        if self.rt_delegate != nil {
-            self.rt_delegate!.navigationController!(navigationController, willShow: viewController, animated: animated)
-        }
-    }
-    
-    public func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        var viewController = viewController
-        let isRootVC = viewController == navigationController.viewControllers.first!
-        viewController = SafeUnwrapViewController(controller: viewController)
-        if viewController.disableInteractivePopGesture {
-            self.interactivePopGestureRecognizer?.delegate = nil
-            self.interactivePopGestureRecognizer?.isEnabled = false
-        }
-        else {
-            self.interactivePopGestureRecognizer?.delaysTouchesBegan = true
-            self.interactivePopGestureRecognizer?.delegate = self
-            self.interactivePopGestureRecognizer?.isEnabled = !isRootVC
-        }
-        RootNavigationController.attemptRotationToDeviceOrientation()
-        if (self.animationBlock != nil) {
-            self.animationBlock!(true)
-            self.animationBlock = nil
-        }
-        if self.rt_delegate != nil {
-            self.rt_delegate!.navigationController!(navigationController, didShow: viewController, animated: animated)
-        }
-    }
-    
-    public func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
-        if self.rt_delegate != nil {
-            return self.rt_delegate!.navigationControllerSupportedInterfaceOrientations!(navigationController)
-        }
-        return .all
-    }
-    
-    public func navigationControllerPreferredInterfaceOrientationForPresentation(_ navigationController: UINavigationController) -> UIInterfaceOrientation {
-        if self.rt_delegate != nil {
-            return self.rt_delegate!.navigationControllerPreferredInterfaceOrientationForPresentation!(navigationController)
-        }
-        return .portrait
-    }
-    
-    public func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        if self.rt_delegate != nil {
-            return self.rt_delegate!.navigationController!(navigationController, interactionControllerFor: animationController)!
-        }
-        return nil
-    }
-    
-    public func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if self.rt_delegate != nil {
-            return self.rt_delegate!.navigationController!(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
-        }
-        return nil
     }
 }
 
 extension RootNavigationController: UIGestureRecognizerDelegate {
     
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return true
     }
     
-    public func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+     func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldBeRequiredToFailBy otherGestureRecognizer: UIGestureRecognizer) -> Bool {
         return (gestureRecognizer == self.interactivePopGestureRecognizer)
     }
 }
