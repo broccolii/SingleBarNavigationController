@@ -225,8 +225,10 @@ func SafeUnwrapViewController(controller: UIViewController) -> UIViewController 
                 viewController.navigationItem.leftBarButtonItem = viewController.customBackItem(withTarget: self, action: #selector(self.onBack))
             }
         }
-        
-        self.rt_delegate?.navigationController!(navigationController, willShow: viewController, animated: animated)
+        if let _ = rt_delegate,
+            rt_delegate!.responds(to: #selector(UINavigationControllerDelegate.navigationController(_:willShow:animated:))){
+            self.rt_delegate?.navigationController!(navigationController, willShow: viewController, animated: animated)
+        }
     }
     
      func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
@@ -246,32 +248,40 @@ func SafeUnwrapViewController(controller: UIViewController) -> UIViewController 
             self.animationBlock!(true)
             self.animationBlock = nil
         }
+        
+        if let _ = rt_delegate,
+            rt_delegate!.responds(to: #selector(UINavigationControllerDelegate.navigationController(_:didShow:animated:))){
         self.rt_delegate?.navigationController!(navigationController, didShow: viewController, animated: animated)
+        }
     }
     
      func navigationControllerSupportedInterfaceOrientations(_ navigationController: UINavigationController) -> UIInterfaceOrientationMask {
-        if self.rt_delegate != nil {
+        if let _ = rt_delegate,
+            rt_delegate!.responds(to: #selector(UINavigationControllerDelegate.navigationControllerSupportedInterfaceOrientations(_:))){
             return self.rt_delegate!.navigationControllerSupportedInterfaceOrientations!(navigationController)
         }
         return .all
     }
     
      func navigationControllerPreferredInterfaceOrientationForPresentation(_ navigationController: UINavigationController) -> UIInterfaceOrientation {
-        if self.rt_delegate != nil {
+        if let _ = rt_delegate,
+            rt_delegate!.responds(to: #selector(UINavigationControllerDelegate.navigationControllerPreferredInterfaceOrientationForPresentation(_:))){
             return self.rt_delegate!.navigationControllerPreferredInterfaceOrientationForPresentation!(navigationController)
         }
         return .portrait
     }
     
      func navigationController(_ navigationController: UINavigationController, interactionControllerFor animationController: UIViewControllerAnimatedTransitioning) -> UIViewControllerInteractiveTransitioning? {
-        if self.rt_delegate != nil {
+        if let _ = rt_delegate,
+            rt_delegate!.responds(to: #selector(UINavigationControllerDelegate.navigationController(_:interactionControllerFor:))){
             return self.rt_delegate!.navigationController!(navigationController, interactionControllerFor: animationController)!
         }
         return nil
     }
     
      func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
-        if self.rt_delegate != nil {
+        if let _ = rt_delegate,
+            rt_delegate!.responds(to: #selector(UINavigationControllerDelegate.navigationController(_:animationControllerFor:from:to:))){
             return self.rt_delegate!.navigationController!(navigationController, animationControllerFor: operation, from: fromVC, to: toVC)
         }
         return nil
@@ -348,3 +358,4 @@ extension RootNavigationController: UIGestureRecognizerDelegate {
         return (gestureRecognizer == self.interactivePopGestureRecognizer)
     }
 }
+
