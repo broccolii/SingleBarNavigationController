@@ -6,11 +6,9 @@
 //  Copyright © 2016年 broccoliii. All rights reserved.
 //
 
-import Foundation
 import UIKit
 
 internal class WrapperNavigationController: UINavigationController {
-    
     required override init(navigationBarClass: AnyClass?, toolbarClass: AnyClass?) {
         super.init(navigationBarClass: navigationBarClass, toolbarClass: toolbarClass)
     }
@@ -25,39 +23,39 @@ internal class WrapperNavigationController: UINavigationController {
     
     override init(rootViewController: UIViewController) {
         super.init(navigationBarClass: rootViewController.navigationBarClass, toolbarClass: nil)
-        self.pushViewController(rootViewController, animated: false)
+        pushViewController(rootViewController, animated: false)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.interactivePopGestureRecognizer?.isEnabled = false
-        if let mainNavigationController = self.rt_navigationController,
-            mainNavigationController.transferNavigationBarAttributes {
-            self.navigationBar.isTranslucent                = self.navigationController!.navigationBar.isTranslucent
-            self.navigationBar.tintColor                    = self.navigationController!.navigationBar.tintColor
-            self.navigationBar.barTintColor                 = self.navigationController?.navigationBar.barTintColor
-            self.navigationBar.barStyle                     = self.navigationController!.navigationBar.barStyle
-            self.navigationBar.backgroundColor              = self.navigationController!.navigationBar.backgroundColor
-            self.navigationBar.titleTextAttributes          = self.navigationController!.navigationBar.titleTextAttributes
-            self.navigationBar.shadowImage                  = self.navigationController!.navigationBar.shadowImage
-            self.navigationBar.backIndicatorImage           = self.navigationController!.navigationBar.backIndicatorImage
-            self.navigationBar.backIndicatorTransitionMaskImage = self.navigationController!.navigationBar.backIndicatorTransitionMaskImage
+        interactivePopGestureRecognizer?.isEnabled = false
+        if let mainNavigationController = exclusiveNavigationController,
+            mainNavigationController.isTransferNavigationBarAttributes {
+            navigationBar.isTranslucent                =  navigationController!.navigationBar.isTranslucent
+            navigationBar.tintColor                    =  navigationController!.navigationBar.tintColor
+            navigationBar.barTintColor                 =  navigationController?.navigationBar.barTintColor
+            navigationBar.barStyle                     =  navigationController!.navigationBar.barStyle
+            navigationBar.backgroundColor              =  navigationController!.navigationBar.backgroundColor
+            navigationBar.titleTextAttributes          =  navigationController!.navigationBar.titleTextAttributes
+            navigationBar.shadowImage                  =  navigationController!.navigationBar.shadowImage
+            navigationBar.backIndicatorImage           =  navigationController!.navigationBar.backIndicatorImage
+            navigationBar.backIndicatorTransitionMaskImage =  navigationController!.navigationBar.backIndicatorTransitionMaskImage
             
-            self.navigationBar.setBackgroundImage(self.navigationController?.navigationBar.backgroundImage(for: .default), for: .default)
-            self.navigationBar.setTitleVerticalPositionAdjustment(self.navigationController!.navigationBar.titleVerticalPositionAdjustment(for: .default), for: .default)
+            navigationBar.setBackgroundImage( navigationController?.navigationBar.backgroundImage(for: .default), for: .default)
+            navigationBar.setTitleVerticalPositionAdjustment( navigationController!.navigationBar.titleVerticalPositionAdjustment(for: .default), for: .default)
         }
-        self.view.layoutIfNeeded()
+        view.layoutIfNeeded()
     }
     
-   override var tabBarController: UITabBarController? {
+    override var tabBarController: UITabBarController? {
         let superTabBarController = super.tabBarController
-        let navigationController = self.rt_navigationController
+        let navigationController =  exclusiveNavigationController
         if (superTabBarController != nil) {
             if let tabBarController = navigationController?.tabBarController,
                 tabBarController != superTabBarController {
                 return superTabBarController
             } else {
-                let BoolValue = navigationController!.rt_viewControllers.any({ (viewController) -> Bool in
+                let BoolValue = navigationController!.exclusiveViewControllers.any({ (viewController) -> Bool in
                     return viewController.hidesBottomBarWhenPushed
                 })
                 if !superTabBarController!.tabBar.isTranslucent || BoolValue {
@@ -69,93 +67,89 @@ internal class WrapperNavigationController: UINavigationController {
         }
         return nil
     }
-   
+    
     @available(iOS, introduced: 6.0, deprecated: 9.0)
-    func forUnwindSegueAction(_ action: Selector, from fromViewController: UIViewController, withSender sender: Any) -> UIViewController? {
-        if self.navigationController != nil {
-            return self.navigationController!.forUnwindSegueAction(action, from: self.parent!, withSender: sender)!
+    override func forUnwindSegueAction(_ action: Selector, from fromViewController: UIViewController, withSender sender: Any?) -> UIViewController? {
+        if navigationController != nil {
+            return navigationController!.forUnwindSegueAction(action, from:  parent!, withSender: sender)!
         }
         return super.forUnwindSegueAction(action, from: fromViewController, withSender: sender)
     }
     
     @available(iOS 9.0, *)
     override func allowedChildViewControllersForUnwinding(from source: UIStoryboardUnwindSegueSource) -> [UIViewController] {
-        if self.navigationController != nil {
-            return self.navigationController!.allowedChildViewControllersForUnwinding(from: source)
+        if navigationController != nil {
+            return navigationController!.allowedChildViewControllersForUnwinding(from: source)
         }
         return super.allowedChildViewControllersForUnwinding(from: source)
     }
     
     override func pushViewController(_ viewController: UIViewController, animated: Bool) {
-        if self.navigationController != nil {
-            self.navigationController!.pushViewController(viewController, animated: animated)
+        if navigationController != nil {
+            navigationController!.pushViewController(viewController, animated: animated)
         } else {
             super.pushViewController(viewController, animated: animated)
         }
     }
     
     override func forwardingTarget(for aSelector: Selector) -> Any? {
-        if self.navigationController!.responds(to: aSelector) {
-            return self.navigationController!
+        if navigationController!.responds(to: aSelector) {
+            return navigationController!
         }
         return nil
     }
     
     
     override func popViewController(animated: Bool) -> UIViewController? {
-        if self.navigationController != nil {
-            return self.navigationController!.popViewController(animated: animated)
+        if navigationController != nil {
+            return navigationController!.popViewController(animated: animated)
         }
         return super.popViewController(animated: animated)
     }
+    
     override func popToRootViewController(animated: Bool) -> [UIViewController]? {
-        if self.navigationController != nil {
-            return self.navigationController!.popToRootViewController(animated: animated)
+        if navigationController != nil {
+            return  navigationController!.popToRootViewController(animated: animated)
         }
         return super.popToRootViewController(animated: animated)
     }
     
     override func popToViewController(_ viewController: UIViewController, animated: Bool) -> [UIViewController]? {
-        if self.navigationController != nil {
-            return self.navigationController!.popToViewController(viewController, animated: animated)
+        if navigationController != nil {
+            return  navigationController!.popToViewController(viewController, animated: animated)
         }
         return super.popToViewController(viewController, animated: animated)
     }
     
     override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
-        if self.navigationController != nil {
-            self.navigationController!.setViewControllers(viewControllers, animated: animated)
-        }
-        else {
+        if navigationController != nil {
+            navigationController!.setViewControllers(viewControllers, animated: animated)
+        } else {
             super.setViewControllers(viewControllers, animated: animated)
         }
     }
-
+    
     override var delegate: UINavigationControllerDelegate? {
         set {
-            if self.navigationController != nil {
-                self.navigationController!.delegate = newValue
+            if navigationController != nil {
+                navigationController!.delegate = newValue
             } else {
                 super.delegate = newValue
             }
         }
         
         get {
-            if self.navigationController != nil {
-                return self.navigationController!.delegate
-            } else {
-               return super.delegate
-            }
+            return super.delegate
         }
     }
     
     override func setNavigationBarHidden(_ hidden: Bool, animated: Bool) {
         super.setNavigationBarHidden(hidden, animated: animated)
-        if let visible = self.visibleViewController,
-            visible.rt_hasSetInteractivePop {
-            
-        } else {
-            self.visibleViewController?.disableInteractivePopGesture = hidden
+        
+        guard let visible = visibleViewController,
+            visible.disableInteractivePopGesture else {
+            return
         }
+        visibleViewController?.disableInteractivePopGesture = hidden
     }
 }
