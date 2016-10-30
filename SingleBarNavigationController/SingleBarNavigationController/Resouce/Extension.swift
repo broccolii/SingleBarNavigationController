@@ -48,7 +48,41 @@ extension UIViewController {
     }
     
     open func customBackItem(withTarget target: Any, action: Selector) -> UIBarButtonItem {
-        return UIBarButtonItem(title: NSLocalizedString("Back", comment: ""), style: .plain, target: target, action: action)
+        let button = UIButton(type: .custom)
+        let arrowImage = createBackBarButtonArrowsImage((self.navigationController?.navigationBar.tintColor)!, in: CGSize(width: 13, height: 21))
+        button.setImage(arrowImage, for: .normal)
+        button.contentMode = UIViewContentMode.scaleAspectFit
+        button.sizeToFit()
+        button.addTarget(target, action: action, for: .touchUpInside)
+        return UIBarButtonItem(customView: button)
+    }
+    
+    private func createBackBarButtonArrowsImage(_ color: UIColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 0.5), in size: CGSize) -> UIImage {
+        
+        UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
+        
+        let context = UIGraphicsGetCurrentContext()!
+        
+        let x1: CGFloat = size.width - 2
+        let y1: CGFloat = 2
+        
+        let x2: CGFloat = 2
+        let y2: CGFloat = size.height / 2
+        
+        let x3: CGFloat = size.width - 2
+        let y3: CGFloat = size.height - 2
+        
+        
+        context.beginPath()
+        color.set()
+        context.setLineWidth(3.0)
+        context.move(to: CGPoint(x: x1, y: y1))
+        context.addLine(to: CGPoint(x: x2, y: y2))
+        context.addLine(to: CGPoint(x: x3, y: y3))
+        context.strokePath()
+        let theImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        return theImage
     }
 }
 
