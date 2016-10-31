@@ -7,15 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A450CE411DC21D6F00E785DD /* WrapperController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FA32C31DC20B7A0082400B /* WrapperController.swift */; };
+		A450CE411DC21D6F00E785DD /* WrapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FA32C31DC20B7A0082400B /* WrapperViewController.swift */; };
 		A450CE421DC21D7700E785DD /* SingleBarNavigationController.h in Headers */ = {isa = PBXBuildFile; fileRef = A450CE3C1DC21C1700E785DD /* SingleBarNavigationController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A450CE441DC21F3C00E785DD /* WrapperNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A450CE431DC21F3C00E785DD /* WrapperNavigationController.swift */; };
+		A450CE481DC2235D00E785DD /* RootNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A450CE471DC2235D00E785DD /* RootNavigationController.swift */; };
+		A48125891DC2331F0004B427 /* Extension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A48125881DC2331F0004B427 /* Extension.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A450CE3B1DC21C1700E785DD /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A450CE3C1DC21C1700E785DD /* SingleBarNavigationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SingleBarNavigationController.h; sourceTree = "<group>"; };
+		A450CE431DC21F3C00E785DD /* WrapperNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WrapperNavigationController.swift; sourceTree = "<group>"; };
+		A450CE471DC2235D00E785DD /* RootNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RootNavigationController.swift; sourceTree = "<group>"; };
+		A48125881DC2331F0004B427 /* Extension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extension.swift; sourceTree = "<group>"; };
 		A4FA32881DC207040082400B /* SingleBarNavigationController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SingleBarNavigationController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		A4FA32C31DC20B7A0082400B /* WrapperController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WrapperController.swift; sourceTree = "<group>"; };
+		A4FA32C31DC20B7A0082400B /* WrapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WrapperViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,7 +64,10 @@
 		A4FA32C21DC208E50082400B /* Resouce */ = {
 			isa = PBXGroup;
 			children = (
-				A4FA32C31DC20B7A0082400B /* WrapperController.swift */,
+				A4FA32C31DC20B7A0082400B /* WrapperViewController.swift */,
+				A450CE431DC21F3C00E785DD /* WrapperNavigationController.swift */,
+				A450CE471DC2235D00E785DD /* RootNavigationController.swift */,
+				A48125881DC2331F0004B427 /* Extension.swift */,
 			);
 			path = Resouce;
 			sourceTree = "<group>";
@@ -143,7 +152,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A450CE411DC21D6F00E785DD /* WrapperController.swift in Sources */,
+				A48125891DC2331F0004B427 /* Extension.swift in Sources */,
+				A450CE411DC21D6F00E785DD /* WrapperViewController.swift in Sources */,
+				A450CE441DC21F3C00E785DD /* WrapperNavigationController.swift in Sources */,
+				A450CE481DC2235D00E785DD /* RootNavigationController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +252,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -260,6 +273,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SingleBarNavigationController/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.broccoliii.SingleBarNavigationController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -280,6 +294,7 @@
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				INFOPLIST_FILE = SingleBarNavigationController/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.broccoliii.SingleBarNavigationController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
