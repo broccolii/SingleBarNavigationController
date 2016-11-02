@@ -24,10 +24,11 @@ fileprivate var kInteractivePopGestureKey = "kInteractivePopGestureKey"
 
 extension UIViewController {
     public var exclusiveNavigationController: ExclusiveNavigationController? {
-        if !(self is ExclusiveNavigationController) {
-            return self.navigationController as? ExclusiveNavigationController
+        var wrapperViewController  = self
+        while !(wrapperViewController is ExclusiveNavigationController) {
+            wrapperViewController =  wrapperViewController.navigationController!
         }
-        return self as? ExclusiveNavigationController
+        return wrapperViewController as? ExclusiveNavigationController
     }
     
     @IBInspectable public var disableInteractivePopGesture: Bool {
@@ -49,7 +50,7 @@ extension UIViewController {
     
     open func customBackItem(withTarget target: Any, action: Selector) -> UIBarButtonItem {
         let button = UIButton(type: .custom)
-        let arrowImage = createBackBarButtonArrowsImage((self.navigationController?.navigationBar.tintColor)!, in: CGSize(width: 13, height: 21))
+        let arrowImage = createBackBarButtonArrowImage((self.navigationController?.navigationBar.tintColor)!, in: CGSize(width: 13, height: 21))
         button.setImage(arrowImage, for: .normal)
         button.contentMode = UIViewContentMode.scaleAspectFit
         button.sizeToFit()
@@ -57,32 +58,25 @@ extension UIViewController {
         return UIBarButtonItem(customView: button)
     }
     
-    private func createBackBarButtonArrowsImage(_ color: UIColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 0.5), in size: CGSize) -> UIImage {
+    private func createBackBarButtonArrowImage(_ color: UIColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 0.5), in size: CGSize) -> UIImage? {
         
         UIGraphicsBeginImageContextWithOptions(size, false, 0.0)
-        
         let context = UIGraphicsGetCurrentContext()!
         
-        let x1: CGFloat = size.width - 2
-        let y1: CGFloat = 2
-        
-        let x2: CGFloat = 2
-        let y2: CGFloat = size.height / 2
-        
-        let x3: CGFloat = size.width - 2
-        let y3: CGFloat = size.height - 2
-        
+        let point1 = CGPoint(x: size.width - 2, y: 2)
+        let point2 = CGPoint(x: 2, y: size.height / 2)
+        let point3 = CGPoint(x: size.width - 2, y: size.height - 2)
         
         context.beginPath()
         color.set()
         context.setLineWidth(3.0)
-        context.move(to: CGPoint(x: x1, y: y1))
-        context.addLine(to: CGPoint(x: x2, y: y2))
-        context.addLine(to: CGPoint(x: x3, y: y3))
+        context.move(to: point1)
+        context.addLine(to: point2)
+        context.addLine(to: point3)
         context.strokePath()
-        let theImage = UIGraphicsGetImageFromCurrentImageContext()!
+        let arrowImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return theImage
+        return arrowImage
     }
 }
 
