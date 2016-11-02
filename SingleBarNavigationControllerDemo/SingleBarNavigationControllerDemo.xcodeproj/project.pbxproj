@@ -12,6 +12,7 @@
 		A46A5B301DC455CD002F32C4 /* ExclusiveNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46A5B2B1DC455CD002F32C4 /* ExclusiveNavigationController.swift */; };
 		A46A5B321DC455CD002F32C4 /* WrapperNavigationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46A5B2D1DC455CD002F32C4 /* WrapperNavigationController.swift */; };
 		A46A5B331DC455CD002F32C4 /* WrapperViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A46A5B2E1DC455CD002F32C4 /* WrapperViewController.swift */; };
+		A493F7D41DC703F50082CC46 /* FullscreenPopGestureExtension.swift in Sources */ = {isa = PBXBuildFile; fileRef = A493F7D31DC703F50082CC46 /* FullscreenPopGestureExtension.swift */; };
 		A4E9AD5F1DC3295500EC7D16 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4E9AD5E1DC3295500EC7D16 /* ViewController.swift */; };
 		A4FA32A01DC207220082400B /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4FA329F1DC207220082400B /* AppDelegate.swift */; };
 		A4FA32A71DC207230082400B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A4FA32A61DC207230082400B /* Assets.xcassets */; };
@@ -24,6 +25,7 @@
 		A46A5B2B1DC455CD002F32C4 /* ExclusiveNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExclusiveNavigationController.swift; sourceTree = "<group>"; };
 		A46A5B2D1DC455CD002F32C4 /* WrapperNavigationController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WrapperNavigationController.swift; sourceTree = "<group>"; };
 		A46A5B2E1DC455CD002F32C4 /* WrapperViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = WrapperViewController.swift; sourceTree = "<group>"; };
+		A493F7D31DC703F50082CC46 /* FullscreenPopGestureExtension.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FullscreenPopGestureExtension.swift; sourceTree = "<group>"; };
 		A4E9AD5E1DC3295500EC7D16 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
 		A4FA329C1DC207220082400B /* SingleBarNavigationControllerDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SingleBarNavigationControllerDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A4FA329F1DC207220082400B /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -50,6 +52,7 @@
 				A46A5B2B1DC455CD002F32C4 /* ExclusiveNavigationController.swift */,
 				A46A5B2D1DC455CD002F32C4 /* WrapperNavigationController.swift */,
 				A46A5B2E1DC455CD002F32C4 /* WrapperViewController.swift */,
+				A493F7D31DC703F50082CC46 /* FullscreenPopGestureExtension.swift */,
 			);
 			name = Resouce;
 			path = ../../SingleBarNavigationController/SingleBarNavigationController/Resouce;
@@ -161,6 +164,7 @@
 				A4E9AD5F1DC3295500EC7D16 /* ViewController.swift in Sources */,
 				A46A5B301DC455CD002F32C4 /* ExclusiveNavigationController.swift in Sources */,
 				A46A5B321DC455CD002F32C4 /* WrapperNavigationController.swift in Sources */,
+				A493F7D41DC703F50082CC46 /* FullscreenPopGestureExtension.swift in Sources */,
 				A46A5B2F1DC455CD002F32C4 /* Extension.swift in Sources */,
 				A4FA32A01DC207220082400B /* AppDelegate.swift in Sources */,
 				A46A5B331DC455CD002F32C4 /* WrapperViewController.swift in Sources */,
