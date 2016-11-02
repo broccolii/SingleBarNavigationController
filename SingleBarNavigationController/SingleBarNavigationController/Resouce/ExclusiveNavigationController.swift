@@ -217,7 +217,7 @@ open class ExclusiveNavigationController: UINavigationController, UINavigationCo
         }
         if let _ = exclusiveDelegate,
             exclusiveDelegate!.responds(to: #selector(UINavigationControllerDelegate.navigationController(_:willShow:animated:))){
-            exclusiveDelegate?.navigationController!(navigationController, willShow: viewController, animated: animated)
+            exclusiveDelegate!.navigationController!(navigationController, willShow: viewController, animated: animated)
         }
     }
     
