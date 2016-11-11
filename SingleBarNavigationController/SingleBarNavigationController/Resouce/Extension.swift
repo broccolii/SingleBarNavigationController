@@ -24,9 +24,9 @@ fileprivate var kInteractivePopGestureKey = "kInteractivePopGestureKey"
 
 extension UIViewController {
     public var exclusiveNavigationController: ExclusiveNavigationController? {
-        var wrapperViewController  = self
-        while !(wrapperViewController is ExclusiveNavigationController) {
-            wrapperViewController =  wrapperViewController.navigationController!
+        var wrapperViewController: UIViewController? = self
+        while (wrapperViewController as? ExclusiveNavigationController) == nil && wrapperViewController != nil {
+            wrapperViewController =  wrapperViewController?.navigationController
         }
         return wrapperViewController as? ExclusiveNavigationController
     }
@@ -55,7 +55,8 @@ extension UIViewController {
         button.contentMode = UIViewContentMode.scaleAspectFit
         button.sizeToFit()
         button.addTarget(target, action: action, for: .touchUpInside)
-        return UIBarButtonItem(customView: button)
+        let backBarButtonItem = UIBarButtonItem(customView: button)
+        return backBarButtonItem
     }
     
     private func createBackBarButtonArrowImage(_ color: UIColor = UIColor(red: 0.5, green: 0.5, blue: 0.6, alpha: 0.5), in size: CGSize) -> UIImage? {
@@ -73,6 +74,7 @@ extension UIViewController {
         context.move(to: point1)
         context.addLine(to: point2)
         context.addLine(to: point3)
+        context.setStrokeColor(UIColor.white.cgColor)
         context.strokePath()
         let arrowImage = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()

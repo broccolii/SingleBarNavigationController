@@ -37,7 +37,7 @@ open class ExclusiveNavigationController: UINavigationController, UINavigationCo
     fileprivate var animationBlock: ((Bool) -> Void)?
     
     @IBInspectable var isUseSystemBackBarButtonItem = false
-    @IBInspectable var isTransferNavigationBarAttributes = false
+    @IBInspectable var isTransferNavigationBarAttributes = true
     
     var exclusiveTopViewController: UIViewController {
         return SafeUnwrapViewController(super.topViewController!)
@@ -65,6 +65,10 @@ open class ExclusiveNavigationController: UINavigationController, UINavigationCo
     
     required public init() {
         super.init(nibName: nil, bundle: nil)
+    }
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
     
     required public init?(coder aDecoder: NSCoder) {
@@ -125,8 +129,12 @@ open class ExclusiveNavigationController: UINavigationController, UINavigationCo
     }
     
     override open func popToRootViewController(animated: Bool) -> [UIViewController]? {
-        return super.popToRootViewController(animated: animated)!.map{ (viewController) -> UIViewController in
-            SafeUnwrapViewController(viewController)
+        if let viewControllers = super.popToRootViewController(animated: animated) {
+            return viewControllers.map{ (viewController) -> UIViewController in
+                SafeUnwrapViewController(viewController)
+            }
+        } else {
+            return nil
         }
     }
     
@@ -140,9 +148,12 @@ open class ExclusiveNavigationController: UINavigationController, UINavigationCo
         }
         
         if controllerToPop != nil {
-            return super.popToViewController(controllerToPop!, animated: animated)!.map{ (viewController) -> UIViewController in
-                return SafeUnwrapViewController(viewController)
+            if let viewControllers = super.popToRootViewController(animated: animated) {
+                return viewControllers.map{ (viewController) -> UIViewController in
+                    return SafeUnwrapViewController(viewController)
+                }
             }
+            return nil
         }
         return nil
     }

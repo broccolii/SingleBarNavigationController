@@ -40,7 +40,6 @@ internal class WrapperNavigationController: UINavigationController {
             navigationBar.shadowImage                  =  navigationController!.navigationBar.shadowImage
             navigationBar.backIndicatorImage           =  navigationController!.navigationBar.backIndicatorImage
             navigationBar.backIndicatorTransitionMaskImage =  navigationController!.navigationBar.backIndicatorTransitionMaskImage
-            
             navigationBar.setBackgroundImage( navigationController?.navigationBar.backgroundImage(for: .default), for: .default)
             navigationBar.setTitleVerticalPositionAdjustment( navigationController!.navigationBar.titleVerticalPositionAdjustment(for: .default), for: .default)
         }

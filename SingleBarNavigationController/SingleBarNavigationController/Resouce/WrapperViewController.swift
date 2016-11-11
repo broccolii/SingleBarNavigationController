@@ -42,6 +42,8 @@ open class WrapperViewController: UIViewController {
         self.init()
         contentViewController = viewController
         wrapperNavigationController = WrapperNavigationController(navigationBarClass: navigationBarClass, toolbarClass: nil)
+//        wrapperNavigationController.navigationBar.barTintColor = UIColor.colorFromRGB(MainColor)
+//        wrapperNavigationController.navigationBar.titleTextAttributes = [NSForegroundColorAttributeName : UIColor.white]
         if yesOrNo {
             let placeholderViewController = UIViewController()
             placeholderViewController.title = backTitle
