@@ -43,7 +43,6 @@ internal class WrapperNavigationController: UINavigationController {
             navigationBar.setBackgroundImage( navigationController?.navigationBar.backgroundImage(for: .default), for: .default)
             navigationBar.setTitleVerticalPositionAdjustment( navigationController!.navigationBar.titleVerticalPositionAdjustment(for: .default), for: .default)
         }
-        view.layoutIfNeeded()
     }
     
     override var tabBarController: UITabBarController? {
@@ -98,7 +97,6 @@ internal class WrapperNavigationController: UINavigationController {
         return nil
     }
     
-    
     override func popViewController(animated: Bool) -> UIViewController? {
         if navigationController != nil {
             return navigationController!.popViewController(animated: animated)
@@ -125,6 +123,42 @@ internal class WrapperNavigationController: UINavigationController {
             navigationController!.setViewControllers(viewControllers, animated: animated)
         } else {
             super.setViewControllers(viewControllers, animated: animated)
+        }
+    }
+    
+    override func addChildViewController(_ childController: UIViewController) {
+        if navigationController != nil {
+            navigationController!.addChildViewController(childController)
+        } else {
+            super.addChildViewController(childController)
+        }
+    }
+    
+    override var childViewControllers: [UIViewController] {
+//        if navigationController != nil {
+//        return navigationController?.viewControllers ?? [UIViewController]()
+        if navigationController != nil {
+            return navigationController!.childViewControllers
+        } else {
+            return super.childViewControllers
+        }
+    }
+    
+    override var viewControllers: [UIViewController] {
+        get {
+            if navigationController != nil {
+                return self.navigationController!.viewControllers
+            } else {
+                return super.viewControllers
+            }
+        }
+        
+        set {
+            if navigationController != nil {
+                navigationController!.viewControllers = newValue
+            } else {
+                super.viewControllers = newValue
+            }
         }
     }
     

@@ -174,6 +174,39 @@ open class ExclusiveNavigationController: UINavigationController, UINavigationCo
         super.setViewControllers(wrapViewControllers, animated: animated)
     }
     
+    open override var viewControllers: [UIViewController] {
+        set {
+            var wrapViewControllers = [UIViewController]()
+            for (index, viewController) in newValue.enumerated() {
+                if isUseSystemBackBarButtonItem && index > 0 {
+                    wrapViewControllers.append(SafeWrapViewController(viewController,
+                                                                      navigationBarClass: viewController.navigationBarClass,
+                                                                      useSystemBackBarButtonItem: isUseSystemBackBarButtonItem,
+                                                                      backBarButtonItem: newValue[index - 1].navigationItem.backBarButtonItem,
+                                                                      backTitle: newValue[index - 1].title))
+                } else {
+                    wrapViewControllers.append(SafeWrapViewController(viewController, navigationBarClass: viewController.navigationBarClass))
+                }
+            }
+            super.viewControllers = wrapViewControllers
+        }
+        
+        get {
+            let unwrapViewControllers = super.viewControllers.map { (viewController) -> UIViewController in
+             return SafeUnwrapViewController(viewController)
+            }
+            return unwrapViewControllers
+        }
+    }
+    
+    
+    open override var childViewControllers: [UIViewController] {
+        let unwrapViewControllers = super.childViewControllers.map { (viewController) -> UIViewController in
+            return SafeUnwrapViewController(viewController)
+        }
+        return unwrapViewControllers
+    }
+    
     override open var delegate: UINavigationControllerDelegate? {
         set {
             exclusiveDelegate = newValue
@@ -219,7 +252,7 @@ open class ExclusiveNavigationController: UINavigationController, UINavigationCo
     
     public func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
         var viewController = viewController
-        let isRootVC = viewController == navigationController.viewControllers.first!
+        let isRootVC = SafeUnwrapViewController(viewController) == navigationController.viewControllers.first!
         if !isRootVC {
             viewController = SafeUnwrapViewController(viewController)
             if !isUseSystemBackBarButtonItem && viewController.navigationItem.leftBarButtonItem == nil {

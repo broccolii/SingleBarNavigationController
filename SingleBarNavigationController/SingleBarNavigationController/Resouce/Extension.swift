@@ -70,7 +70,7 @@ extension UIViewController {
         
         context.beginPath()
         color.set()
-        context.setLineWidth(3.0)
+        context.setLineWidth(2.5)
         context.move(to: point1)
         context.addLine(to: point2)
         context.addLine(to: point3)
